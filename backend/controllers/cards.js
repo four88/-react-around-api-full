@@ -1,111 +1,93 @@
 const Card = require('../models/cards');
-const { NOT_FOUND_ERROR_CODE, SUCCESS_CODE, ERROR_OCCURED_CODE, ERROR_OCCURED_MSG, INVALID_CODE } = require('../utils/constant');
+const {
+  SUCCESS_CODE,
+} = require('../utils/constant');
+const NotFoundError = require('../errors/notFoundError');
+const BadRequestError = require('../errors/badRequestError');
 
 // get all the card data
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find({})
     .orFail(() => {
-      const error = new Error('Can not find any card');
-      error.statusCode = NOT_FOUND_ERROR_CODE;
-      throw error;
+      new NotFoundError('Cards were not found');
     })
     .then((card) => res.status(SUCCESS_CODE).send({ data: card }))
-    .catch((err) => {
-      if (err.statusCode === NOT_FOUND_ERROR_CODE) {
-        res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message })
-      } else {
-        res.status(ERROR_OCCURED_CODE).send({ message: ERROR_OCCURED_MSG })
-      }
-    });
+    .catch(next);
 };
 
 // create card
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
     .then((card) => res.status(SUCCESS_CODE).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(INVALID_CODE).send({
-          message: `${Object.values(err.errors)}`
-        });
+        next(new BadRequestError('Invalid name or link'));
       } else {
-        res.status(ERROR_OCCURED_CODE).send({ message: ERROR_OCCURED_MSG });
+        next(err);
       }
     });
 };
 
 // delete card
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   Card.findByIdAndRemove(req.params._id)
     .orFail(() => {
-      const error = new Error('Can not find this user id on all cards');
-      error.statusCode = NOT_FOUND_ERROR_CODE;
-      throw error;
+      new NotFoundError('Cards were not found');
     })
     .then((card) => {
       res.status(SUCCESS_CODE).send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(INVALID_CODE).send({ message: 'Invalid card id' });
-      } else if (err.statusCode === NOT_FOUND_ERROR_CODE) {
-        res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+        next(new BadRequestError('Invalid card or user Id'));
       } else {
-        res.status(ERROR_OCCURED_CODE).send({ message: ERROR_OCCURED_MSG });
+        next(err);
       }
     });
 };
 
 // for like card
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params._id,
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
     .orFail(() => {
-      const error = new Error('Can not find this user id');
-      error.statusCode = NOT_FOUND_ERROR_CODE;
-      throw error;
+      new NotFoundError('Card Id not found');
     })
     .then((card) => {
       res.status(SUCCESS_CODE).send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(INVALID_CODE).send({ message: 'Innvalid card id or user id' });
-      } else if (err.statusCode === NOT_FOUND_ERROR_CODE) {
-        res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+        next(new BadRequestError('Invalid card or user Id'));
       } else {
-        res.status(ERROR_OCCURED_CODE).send({ message: ERROR_OCCURED_MSG });
+        next(err);
       }
     });
 };
 
 // for dislike card
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params._id,
     { $pull: { likes: req.user._id } },
     { new: true },
   )
     .orFail(() => {
-      const error = new Error('Can not find this user id');
-      error.statusCode = NOT_FOUND_ERROR_CODE;
-      throw error;
+      new NotFoundError('Card Id not found');
     })
     .then((card) => {
       res.status(SUCCESS_CODE).send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(INVALID_CODE).send({ messaage: " Invalid card id or user id" });
-      } else if (err.statusCode === NOT_FOUND_ERROR_CODE) {
-        res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+        next(new BadRequestError('Invalid card or user Id'));
       } else {
-        res.status(ERROR_OCCURED_CODE).send({ message: ERROR_OCCURED_MSG });
+        next(err);
       }
     });
 };

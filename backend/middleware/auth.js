@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 const handleAuthError = (res) => {
@@ -9,9 +10,7 @@ const handleAuthError = (res) => {
 
 // for checking authorization token from frontend
 // Have user has token or not ?
-const extractBearerToken = (header) => {
-  return header.replace('Bearer ', '')
-};
+const extractBearerToken = (header) => header.replace('Bearer ', '');
 
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
@@ -31,5 +30,5 @@ module.exports = (req, res, next) => {
 
   req.user = payload; // adding the payload to the Request object
 
-  next(); // passing the request further along
+  return next(); // passing the request further along
 };

@@ -1,71 +1,53 @@
-const User = require('../models/users');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { NOT_FOUND_ERROR_CODE, ERROR_OCCURED_CODE, ERROR_OCCURED_MSG, INVALID_CODE, SUCCESS_CODE } = require('../utils/constant');
-const { NODE_ENV, JWT_SECRET } = process.env;
+const User = require('../models/users');
+const { NOT_FOUND_ERROR_CODE, SUCCESS_CODE } = require('../utils/constant');
 
-module.exports.getUserInfo = (req, res) => {
+const { NODE_ENV, JWT_SECRET } = process.env;
+const NotFoundError = require('../errors/notFoundError');
+const BadRequestError = require('../errors/badRequestError');
+const UnauthorizedError = require('../errors/unauthorizedError');
+
+module.exports.getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
     .orFail(() => {
-      const error = new Error('Can not find this user id');
-      error.statusCode = NOT_FOUND_ERROR_CODE;
-      throw error;
+      new NotFoundError('User ID not found');
     })
     .then((user) => res.status(SUCCESS_CODE).send({ data: user }))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(INVALID_CODE).send({ message: 'Invalid user id' });
-      } else if (err.statusCode === NOT_FOUND_ERROR_CODE) {
-        res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
-      } else {
-        res.status(ERROR_OCCURED_CODE).send({ message: ERROR_OCCURED_MSG });
-      }
-    });
+    .catch(next);
 };
 
-
 // get all the user data
-module.exports.getUser = (req, res) => {
+module.exports.getUser = (req, res, next) => {
+  console.log(req.user._id);
   User.find({})
     .orFail(() => {
-      const error = new Error('Can not find any user');
-      error.statusCode = NOT_FOUND_ERROR_CODE;
-      throw error;
+      new NotFoundError('User ID not found');
     })
     .then((user) => res.status(SUCCESS_CODE).send({ data: user }))
-    .catch((err) => {
-      if (err.statusCode === NOT_FOUND_ERROR_CODE) {
-        res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message })
-      } else {
-        res.status(ERROR_OCCURED_CODE).send({ message: ERROR_OCCURED_MSG })
-      }
-
-    });
+    .catch(next);
 };
 
 // get the user data by id
-module.exports.getProfile = (req, res) => {
+module.exports.getProfile = (req, res, next) => {
   User.findById(req.params._id)
     .orFail(() => {
-      const error = new Error('Can not find this user id');
-      error.statusCode = NOT_FOUND_ERROR_CODE;
-      throw error;
+      new NotFoundError('User ID not found');
     })
-    .then((user) => res.status(SUCCESS_CODE).send({ data: user }))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(INVALID_CODE).send({ message: 'Invalid user id' });
-      } else if (err.statusCode === NOT_FOUND_ERROR_CODE) {
-        res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
-      } else {
-        res.status(ERROR_OCCURED_CODE).send({ message: ERROR_OCCURED_MSG });
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('User ID not found');
       }
-    });
+      res.status(SUCCESS_CODE).send({ data: user });
+    })
+    .catch(next);
 };
 
 // create user
-module.exports.createUser = (req, res) => {
-  const { name, about, avatar, email, password } = req.body;
+module.exports.createUser = (req, res, next) => {
+  const {
+    name, about, avatar, email,
+  } = req.body;
   bcrypt.hash(req.body.password, 10)
     .then((hash) => {
       User.create({
@@ -78,20 +60,18 @@ module.exports.createUser = (req, res) => {
         .then((user) => res.status(SUCCESS_CODE).send({ data: user }))
         .catch((err) => {
           if (err.name === 'ValidationError') {
-            res.status(INVALID_CODE).send({
-              message: `${Object.values(err.errors)}`,
-            });
+            next(new BadRequestError('Missing or Invalid email or password'));
           } else {
-            res.status(ERROR_OCCURED_CODE).send({ message: ERROR_OCCURED_MSG });
+            next(err);
           }
         });
-    })
+    });
 };
 
 // edit user profile
-module.exports.updateProfile = (req, res) => {
+module.exports.updateProfile = (req, res, next) => {
   const { name, about } = req.body;
-  console.log(req.user)
+  console.log(req.user);
   User.findByIdAndUpdate(req.user._id, { name, about }, { runValidators: true, new: true })
     .orFail(() => {
       const error = new Error('Can not find this specific id');
@@ -101,25 +81,17 @@ module.exports.updateProfile = (req, res) => {
     .then((user) => res.status(SUCCESS_CODE).send({ data: user }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(INVALID_CODE).send({ messge: 'Invalid user id' });
-      }
-      else if (err.name === 'ValidationError') {
-        res.status(INVALID_CODE).send({
-          message: `${Object.values(err.errors)}`,
-        });
-      }
-      else if (err.statusCode === NOT_FOUND_ERROR_CODE) {
-        res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+        next(new BadRequestError('Invalid user ID'));
+      } else if (err.name === 'ValidationError') {
+        next(new BadRequestError('Invalid name or description'));
       } else {
-        res.status(ERROR_OCCURED_CODE).send({ message: ERROR_OCCURED_MSG });
+        next(err);
       }
     });
 };
 
-
-
 // edit user avatar
-module.exports.updateProfileAvatar = (req, res) => {
+module.exports.updateProfileAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, { runValidators: true, new: true })
     .orFail(() => {
@@ -130,38 +102,31 @@ module.exports.updateProfileAvatar = (req, res) => {
     .then((user) => res.status(SUCCESS_CODE).send({ data: user }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(INVALID_CODE).send({ messge: 'Invalid user id' });
-      }
-      else if (err.name === 'ValidationError') {
-        res.status(INVALID_CODE).send({
-          message: `${Object.values(err.errors)}`,
-        });
-      }
-      else if (err.statusCode === NOT_FOUND_ERROR_CODE) {
-        res.status(NOT_FOUND_ERROR_CODE).send({ message: err.message });
+        next(new BadRequestError('Invalid user ID'));
+      } else if (err.name === 'ValidationError') {
+        next(new BadRequestError('Invalid name or description'));
       } else {
-        res.status(ERROR_OCCURED_CODE).send({ message: ERROR_OCCURED_MSG });
+        next(err);
       }
     });
 };
 
 // login
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
     .then((user) => {
       res.status(SUCCESS_CODE).send({
-        token: jwt.sign({ _id: user._id },
+        token: jwt.sign(
+          { _id: user._id },
           NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
-          { expiresIn: '7d' }),
+          { expiresIn: '7d' },
+        ),
         name: user.name,
         email: user.email,
-        _id: user._id
-      })
+      });
     })
-    .catch((err) => {
-      res.status(INVALID_CODE).send({ message: err.message })
+    .catch(() => {
+      next(new UnauthorizedError('Incorrect email or password'));
     });
 };
-
-

@@ -1,0 +1,125 @@
+.element {
+  box-sizing: border-box;
+  width: 282px;
+  display: grid;
+  grid-template-rows: 282px auto;
+  background-color: white;
+  border-radius: 10px;
+  position: relative;
+  grid-template-areas:
+    'pic '
+    'name';
+}
+
+.element__pic {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  grid-area: pic;
+  background-repeat: no-repeat;
+  object-fit: cover;
+  border-radius: 10px 10px 0px 0px;
+  cursor: pointer;
+}
+
+.element__name {
+  grid-area: name;
+  width: 100%;
+  display: flex;
+  padding: 25px 19px 25px 21px;
+  flex-direction: row;
+  box-sizing: border-box;
+  justify-content: space-between;
+}
+
+.element__title {
+  color: black;
+  width: 200px;
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 29px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  margin: 0;
+}
+
+.element__icon-img {
+  width: 21px;
+  height: 19px;
+  transition-duration: 0.2s;
+}
+
+.element__icon-img:hover {
+  opacity: 0.5;
+}
+
+.element__icon-img_active {
+  background-image: url(../images/active_button.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 1;
+}
+
+.element__icon {
+  grid-area: name;
+  margin: 0;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.element__like-counter {
+  width: 9px;
+  height: 13px;
+  margin-top: 3px;
+  margin-bottom: 0;
+  font-size: 13px;
+  line-height: 16px;
+  text-align: center;
+}
+
+.element__delete {
+  grid-area: pic;
+  background: url(../images/delete_icon.svg);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: absolute;
+  z-index: 5;
+  height: 18px;
+  width: 18px;
+  border: none;
+  right: 15px;
+  top: 18px;
+  box-sizing: border-box;
+  transition-duration: 0.2s;
+  opacity: 0;
+}
+.element__delete-active {
+  grid-area: pic;
+  background: url(../images/delete_icon.svg);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: absolute;
+  z-index: 5;
+  height: 18px;
+  width: 18px;
+  border: none;
+  right: 15px;
+  top: 18px;
+  box-sizing: border-box;
+  transition-duration: 0.2s;
+  cursor: pointer;
+  opacity: 1;
+}
+
+.element__delete-active:hover {
+  opacity: 0.6;
+}

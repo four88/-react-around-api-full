@@ -1,0 +1,113 @@
+.register_login__container {
+  width: 358px;
+  height: calc(100vh - (120px + 36.5px));
+  margin: 0;
+  padding: 0;
+}
+
+.register_login__form {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.register_login__set {
+  width: 100%;
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.register_login__title {
+  margin: 0;
+  margin-bottom: 50px;
+  font-weight: 900;
+  font-size: 1.5rem;
+  line-height: 1.813;
+}
+.register_login__label {
+  width: 100%;
+}
+
+.register_login__input {
+  border: none;
+  background: black;
+  border-bottom: 2px solid #cccccc;
+  color: white;
+  height: 27px;
+  font-size: 14px;
+  line-height: 17px;
+  width: 100%;
+}
+
+.register_login__input:focus {
+  outline: none;
+}
+
+.register_login__input::placeholder {
+  color: #cccccc;
+}
+
+.register_login__input_type_email {
+  margin: 0;
+  margin-bottom: 30px;
+}
+
+.register_login__submit_button {
+  width: 100%;
+  margin: 0;
+  margin-top: 216px;
+  margin-bottom: 15px;
+  border: 2px solid #ffffff;
+  background: #ffffff;
+  height: 50px;
+  cursor: pointer;
+  font-weight: 400;
+  font-size: 1.125rem;
+  line-height: 1.375rem;
+  transition-duration: 0.3s;
+}
+
+.register_login__submit_button:hover {
+  opacity: 0.85;
+}
+
+.register_login__link {
+  text-decoration: none;
+  color: #ffffff;
+  text-align: center;
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.053rem;
+  margin: 0;
+  padding: 0;
+  transition-duration: 0.3s;
+}
+
+.register_login__link:hover {
+  opacity: 0.6;
+}
+
+@media screen and (max-width: 590px) {
+  .register_login__container {
+    max-width: 260px;
+  }
+
+  .register_login__title {
+    font-size: 20px;
+    line-height: 24px;
+  }
+
+  .register_login__submit_button {
+    margin-top: 174px;
+    margin-bottom: 20px;
+  }
+
+  .register_login__link {
+    font-size: 12px;
+    line-height: 15px;
+  }
+}

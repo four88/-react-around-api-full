@@ -40,16 +40,27 @@ const validateURL = (value, helpers) => {
   return helpers.error('string.uri');
 };
 
-app.use(cors());
 app.use(errors());
 // for security
 app.use(helmet());
 
-app.use(bodyParser.json());
+app.use(bodyParser.json(), cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(requestLogger);
+
+app.use((req, res, next) => {
+  const { origin } = req.headers; // assign the corresponding header to the origin variable
+
+  if (allowedCors.includes(origin)) { // check that the origin value is among the allowed domains
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+
+  next();
+});
+
+app.options('*', cors());
 
 app.get('/crash-test', () => {
   setTimeout(() => {

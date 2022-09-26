@@ -168,7 +168,9 @@ export default function App() {
         if (data.token) {
           localStorage.setItem('token', data.token);
           setLoggedIn(true);
-          handleTokenCheck();
+          console.log(data.token)
+          handleTokenCheck(data.token)
+
         }
       })
       .catch((err) => {
@@ -203,18 +205,30 @@ export default function App() {
   // logout function
   const logout = () => {
     setLoggedIn(false);
+    // setCurrentUser(null);
+    // setCards(null);
     localStorage.removeItem('token');
+    history.push('/signin')
   };
 
   // handle user token (checking user has token or not )
-  const handleTokenCheck = () => {
-    const token = localStorage.getItem('token');
-    if (token) {
+  const handleTokenCheck = (token) => {
+    const localStorageToken = localStorage.getItem('token');
+
+    if (token || localStorageToken) {
+      setLoggedIn(true);
       auth
-        .checkUserToken(token)
+        .checkUserToken(token || localStorageToken)
         .then((res) => {
+          console.log(res.data)
+          setCurrentUser(res.data)
           if (res) {
-            setLoggedIn(true);
+            // setLoggedIn(true);
+            api.getInitialCards()
+              .then((res) => {
+                setCards(res.data)
+              })
+              .catch((err) => console.log(err))
             history.push('/');
           }
         })
@@ -223,23 +237,12 @@ export default function App() {
   };
 
   //useEffect to fetch api data of user and set to CurrentUserContext value(currentUser)
-  useEffect(() => {
-    if (loggedIn) {
-      Promise.all([api.getUserInfo(), api.getInitialCards()])
-        .then(([userInfo, cardsData]) => {
-          setCurrentUser(userInfo.data);
-          setCards(cardsData.data);
-        }).catch((error) => {
-          console.log(error);
-        });
-    }
-  }, [loggedIn]);
-
+  //
   // if user already login allow user to pass throught to homepage by checking token
   useEffect(() => {
     handleTokenCheck();
   }, []);
-
+  //
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="body">

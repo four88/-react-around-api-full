@@ -1,6 +1,6 @@
 const Card = require('../models/cards');
 const {
-  SUCCESS_CODE,
+  SUCCESS_CODE
 } = require('../utils/constant');
 const NotFoundError = require('../errors/notFoundError');
 const BadRequestError = require('../errors/badRequestError');

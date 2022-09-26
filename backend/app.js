@@ -15,6 +15,12 @@ const { PORT = 3000, BASE_PATH } = process.env;
 const { createUser, login } = require('./controllers/users');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 
+const allowedCors = [
+  'https://around-pharanyu.students.nomoredomainssbs.ru',
+  'https://www.around-pharanyu.students.nomoredomainssbs.ru',
+  'localhost:3000',
+];
+
 const app = express();
 const dbUri = 'mongodb://0.0.0.0:27017/aroundb';
 const dbConfig = {
@@ -40,15 +46,13 @@ const validateURL = (value, helpers) => {
   return helpers.error('string.uri');
 };
 
-app.use(errors());
+app.use(requestLogger);
+
 // for security
 app.use(helmet());
 
 app.use(bodyParser.json(), cors());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use(requestLogger);
 
 app.use((req, res, next) => {
   const { origin } = req.headers; // assign the corresponding header to the origin variable
@@ -72,8 +76,8 @@ app.get('/crash-test', () => {
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required()
-  })
+    password: Joi.string().required(),
+  }),
 }), createUser);
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -81,8 +85,8 @@ app.post('/signin', celebrate({
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().custom(validateURL),
     email: Joi.string().required().email(),
-    password: Joi.string().required()
-  })
+    password: Joi.string().required(),
+  }),
 }), login);
 
 app.use(auth);
@@ -92,10 +96,11 @@ app.use('/cards', cardRoutes);
 
 app.get('*', () => {
   throw new NotFoundError('Requested resource not found');
-})
+});
 
 app.use(errorLogger);
 
+app.use(errors());
 // for Non-exestent address
 app.use((err, req, res, next) => {
   res

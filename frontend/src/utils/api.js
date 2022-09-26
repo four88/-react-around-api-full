@@ -82,7 +82,7 @@ class Api {
 }
 
 const api = new Api({
-  baseUrl: "http://localhost:3000",
+  baseUrl: "https://api.around-pharanyu.students.nomoredomainssbs.ru",
   headers: {
     "Content-Type": "application/json",
     "Accept": "application/json",

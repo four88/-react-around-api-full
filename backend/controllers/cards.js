@@ -32,7 +32,7 @@ module.exports.createCard = (req, res, next) => {
 
 // delete card
 module.exports.deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove(req.params._id)
+  Card.findByIdAndRemove(req.params.cardId)
     .orFail(() => {
       new NotFoundError('Cards were not found');
     })
@@ -51,7 +51,7 @@ module.exports.deleteCard = (req, res, next) => {
 // for like card
 module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
-    req.params._id,
+    req.params.cardId,
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
@@ -73,7 +73,7 @@ module.exports.likeCard = (req, res, next) => {
 // for dislike card
 module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
-    req.params._id,
+    req.params.cardId,
     { $pull: { likes: req.user._id } },
     { new: true },
   )

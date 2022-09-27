@@ -16,13 +16,8 @@ import { Switch, Route } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import api from '../utils/api';
 import * as auth from '../utils/auth';
-
 export default function App() {
-  const history = useHistory();
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
-  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
-  const [isDeleteConfirmPopupOpen, setIsDeleteConfirmPopupOpen] = useState(false);
+  const history = useHistory(); const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false); const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false); const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false); const [isDeleteConfirmPopupOpen, setIsDeleteConfirmPopupOpen] = useState(false);
   const [isInfoPopupOpen, setInfoPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
   const [cards, setCards] = useState([]);
@@ -44,6 +39,7 @@ export default function App() {
   // for change state of NavMenu
   const [isNavExpand, setIsNavExpand] = useState(false);
 
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const exitEsc = (e) => {
@@ -95,7 +91,7 @@ export default function App() {
 
     // Send a request to the API and getting the updated card data
     api
-      .changeLikeCardStatus(card._id, isLiked)
+      .changeLikeCardStatus(card._id, isLiked, token)
       .then((newCard) => {
         console.log(newCard)
         const newCards = cards.map((c) => c._id === card._id ? newCard.data : c);
@@ -106,7 +102,7 @@ export default function App() {
 
   const handleDeleteCard = (card) => {
     api
-      .deleteCard(card._id)
+      .deleteCard(card._id, token)
       .then(() => {
         setCards(cards.filter((newCard) => newCard._id !== card._id));
       })
@@ -115,7 +111,7 @@ export default function App() {
 
   const handleUpdateUser = ({ name, about }) => {
     api
-      .updateUserInfo(name, about)
+      .updateUserInfo(name, about, token)
       .then((res) => {
         console.log(res)
         setCurrentUser(res.data);
@@ -126,7 +122,7 @@ export default function App() {
 
   const handleUpdateAvatar = ({ avatar }) => {
     api
-      .updateAvatar(avatar)
+      .updateAvatar(avatar, token)
       .then((res) => {
         setCurrentUser(res.data);
         setIsEditAvatarPopupOpen(false);
@@ -136,7 +132,7 @@ export default function App() {
 
   const handleUpdateCard = ({ title, link }) => {
     api
-      .addNewCard(title, link)
+      .addNewCard(title, link, token)
       .then((res) => {
         setCards([res.data, ...cards]);
         setIsAddPlacePopupOpen(false);
@@ -167,10 +163,9 @@ export default function App() {
       .then((data) => {
         if (data.token) {
           localStorage.setItem('token', data.token);
-          setLoggedIn(true);
-          console.log(data.token)
+          console.log(localStorage.getItem('token'))
           handleTokenCheck(data.token)
-
+          setLoggedIn(true);
         }
       })
       .catch((err) => {
@@ -205,8 +200,6 @@ export default function App() {
   // logout function
   const logout = () => {
     setLoggedIn(false);
-    // setCurrentUser(null);
-    // setCards(null);
     localStorage.removeItem('token');
     history.push('/signin')
   };
@@ -216,21 +209,21 @@ export default function App() {
     const localStorageToken = localStorage.getItem('token');
 
     if (token || localStorageToken) {
-      setLoggedIn(true);
+      setLoggedIn(true)
       auth
         .checkUserToken(token || localStorageToken)
         .then((res) => {
-          console.log(res.data)
-          setCurrentUser(res.data)
           if (res) {
-            // setLoggedIn(true);
-            api.getInitialCards()
+            api.getInitialCards(localStorageToken)
               .then((res) => {
                 setCards(res.data)
               })
-              .catch((err) => console.log(err))
-            history.push('/');
+              .catch(err => console.log(err));
+            setCurrentUser(res.data)
           }
+        })
+        .then(() => {
+          history.push('/');
         })
         .catch((err) => console.log(err));
     }

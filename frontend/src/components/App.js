@@ -113,7 +113,6 @@ export default function App() {
     api
       .updateUserInfo(name, about, token)
       .then((res) => {
-        console.log(res)
         setCurrentUser(res.data);
         setIsEditProfilePopupOpen(false);
       })

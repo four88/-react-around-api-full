@@ -1,8 +1,7 @@
 {
-  "name": "react-around-auth",
+  "name": "react-around-api-full-fronted",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://four88.github.io/react-around-auth",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
@@ -19,8 +18,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "npm run build && scp -r ./build/* pharanyuchuenjit@around-pharanyu.students.nomoredomainssbs.ru:/home/pharanyuchuenjit/react-around-api-full/frontend"
   },
   "eslintConfig": {
     "extends": [
@@ -39,20 +37,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "gh-pages": "^4.0.0"
-  },
-  "description": "### Overview",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/four88/react-around-auth.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/four88/react-around-auth/issues"
   }
 }

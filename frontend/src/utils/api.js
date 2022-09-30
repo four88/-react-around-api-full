@@ -102,7 +102,7 @@ class Api {
 }
 
 const api = new Api({
-  baseUrl: "http://localhost:3000"/*"https://api.around-pharanyu.students.nomoredomainssbs.ru" */,
+  baseUrl: "https://api.around-pharanyu.students.nomoredomainssbs.ru",
 });
 
 export default api;

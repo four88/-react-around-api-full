@@ -36,7 +36,7 @@ module.exports.deleteCard = (req, res, next) => {
   const id = req.params.cardId;
   Card.findById(id)
     .then((card) => {
-      console.log(card)
+      console.log(card);
       if (!card) {
         throw new NotFoundError('Could not find a card with that id');
       }

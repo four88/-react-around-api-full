@@ -2,7 +2,6 @@ const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const path = require('path');
 const cors = require('cors');
 const validator = require('validator');
 const { celebrate, Joi, errors } = require('celebrate');
@@ -10,9 +9,11 @@ const cardRoutes = require('./routes/card');
 const usersRoutes = require('./routes/users');
 const auth = require('./middleware/auth');
 const { NotFoundError } = require('./errors/notFoundError');
+
 const { PORT = 3000, BASE_PATH } = process.env;
 const { createUser, login } = require('./controllers/users');
 const { requestLogger, errorLogger } = require('./middleware/logger');
+
 const app = express();
 const allowedCors = [
   'https://around-pharanyu.students.nomoredomainssbs.ru',

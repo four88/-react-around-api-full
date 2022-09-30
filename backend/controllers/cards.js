@@ -7,16 +7,19 @@ const BadRequestError = require('../errors/badRequestError');
 const ForbiddenError = require('../errors/forbiddenError');
 
 // get all the card data
+// eslint-disable-next-line
 module.exports.getCards = (req, res, next) => {
   Card.find({})
     .orFail(() => {
       new NotFoundError('Cards were not found');
     })
     .then((card) => res.status(SUCCESS_CODE).send({ data: card }))
+    // eslint-disable-next-line
     .catch(next);
 };
 
 // create card
+// eslint-disable-next-line
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
@@ -26,12 +29,14 @@ module.exports.createCard = (req, res, next) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Invalid name or link'));
       } else {
+        // eslint-disable-next-line
         next(err);
       }
     });
 };
 
 // delete card
+// eslint-disable-next-line
 module.exports.deleteCard = (req, res, next) => {
   const id = req.params.cardId;
   Card.findById(id)
@@ -50,10 +55,16 @@ module.exports.deleteCard = (req, res, next) => {
         throw new ForbiddenError('Authorization required for this action');
       }
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        // eslint-disable-next-line
+        next(new BadRequestError('Invalid card or user Id'));
+      }
+    });
 };
 
 // for like card
+// eslint-disable-next-line
 module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
@@ -68,16 +79,20 @@ module.exports.likeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
+        // eslint-disable-next-line
         next(new BadRequestError('Invalid card or user Id'));
       } if (err.name === 'DocumentNotFoundError') {
+        // eslint-disable-next-line
         next(new NotFoundError('Cards were not found'));
       } else {
+        // eslint-disable-next-line
         next(err);
       }
     });
 };
 
 // for dislike card
+// eslint-disable-next-line
 module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
@@ -92,10 +107,13 @@ module.exports.dislikeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
+        // eslint-disable-next-line
         next(new BadRequestError('Invalid card or user Id'));
       } if (err.name === 'DocumentNotFoundError') {
+        // eslint-disable-next-line
         next(new NotFoundError('Cards were not found'));
       } else {
+        // eslint-disable-next-line
         next(err);
       }
     });

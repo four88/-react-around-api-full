@@ -1,12 +1,8 @@
 const jwt = require('jsonwebtoken');
+const UnauthorizedError = require('../errors/unauthorizedError');
+const ForbiddenError = require('../errors/forbiddenError');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
-
-const handleAuthError = (res) => {
-  res
-    .status(401)
-    .send({ message: 'Authorization Error' });
-};
 
 // for checking authorization token from frontend
 // Have user has token or not ?
@@ -16,7 +12,7 @@ module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    return handleAuthError(res);
+    next(new ForbiddenError('authorization required'));
   }
 
   const token = extractBearerToken(authorization);
@@ -25,7 +21,7 @@ module.exports = (req, res, next) => {
   try {
     payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
   } catch (err) {
-    return handleAuthError(res);
+    next(new UnauthorizedError('authorization required'));
   }
 
   req.user = payload; // adding the payload to the Request object

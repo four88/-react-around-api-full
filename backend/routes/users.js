@@ -14,7 +14,7 @@ router.get(
   '/:_id',
   celebrate({
     [Segments.PARAMS]: Joi.object({
-      id: Joi.string().required().hex(),
+      _id: Joi.string().required().hex(),
     }),
   }),
   getProfile,

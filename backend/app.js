@@ -10,18 +10,15 @@ const cardRoutes = require('./routes/card');
 const usersRoutes = require('./routes/users');
 const auth = require('./middleware/auth');
 const { NotFoundError } = require('./errors/notFoundError');
-
 const { PORT = 3000, BASE_PATH } = process.env;
 const { createUser, login } = require('./controllers/users');
 const { requestLogger, errorLogger } = require('./middleware/logger');
-
+const app = express();
 const allowedCors = [
   'https://around-pharanyu.students.nomoredomainssbs.ru',
   'https://www.around-pharanyu.students.nomoredomainssbs.ru',
   'localhost:3000',
 ];
-
-const app = express();
 const dbUri = 'mongodb://0.0.0.0:27017/aroundb';
 const dbConfig = {
   useNewUrlParser: true,

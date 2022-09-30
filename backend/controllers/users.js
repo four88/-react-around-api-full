@@ -7,6 +7,7 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const NotFoundError = require('../errors/notFoundError');
 const BadRequestError = require('../errors/badRequestError');
 const UnauthorizedError = require('../errors/unauthorizedError');
+const ConflictError = require('../errors/conflictError');
 
 module.exports.getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
@@ -19,10 +20,9 @@ module.exports.getUserInfo = (req, res, next) => {
 
 // get all the user data
 module.exports.getUser = (req, res, next) => {
-  console.log(req.user._id);
   User.find({})
     .orFail(() => {
-      new NotFoundError('User ID not found');
+      new NotFoundError('Cannot find any user');
     })
     .then((user) => res.status(SUCCESS_CODE).send({ data: user }))
     .catch(next);
@@ -57,10 +57,19 @@ module.exports.createUser = (req, res, next) => {
         email,
         password: hash,
       })
-        .then((user) => res.status(SUCCESS_CODE).send({ data: user }))
+        .then((user) => res.status(SUCCESS_CODE).send({
+          data: {
+            name: user.name,
+            about: user.about,
+            email: user.email,
+            avatar: user.avatar,
+          },
+        }))
         .catch((err) => {
           if (err.name === 'ValidationError') {
             next(new BadRequestError('Missing or Invalid email or password'));
+          } if (err.name === 'MongoServerError') {
+            next(new ConflictError('This email is already exits'));
           } else {
             next(err);
           }

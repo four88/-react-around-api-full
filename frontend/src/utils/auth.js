@@ -1,4 +1,4 @@
-export const BASE_URL = "https://api.around-pharanyu.students.nomoredomainssbs.ru";
+export const BASE_URL = "http://localhost:3000" /* "https://api.around-pharanyu.students.nomoredomainssbs.ru" */;
 
 const checkResponse = (res) => {
   if (res.ok) {

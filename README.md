@@ -4,6 +4,9 @@ The API of "Around the U.S." with authorization and registration handled by the 
 This application develped by "MERN" stack is the full stack project. The purpose to of this project to understand how to developer 
 web applcation with both side Fronted and Backend.
 
+## Live project 
+* [Click here!](https://around-pharanyu.students.nomoredomainssbs.ru)
+
 ## Features
 * User authorization (Login and register system)
 * Allow user to edit their name, about and avatar
@@ -30,7 +33,7 @@ Edit avatar
 ![](like-dislike.gif)
 
 ### Popup
-![](http://www.giphy.com/gifs/r6BnmTuXHK1s63fMfo)
+![](popup.gif)
 
 ## Technology
 ### Frontend

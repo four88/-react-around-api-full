@@ -37,19 +37,19 @@ mongoose.connect(dbUri, dbConfig).then(
   },
 );
 
-const validateURL = (value, helpers) => {
-  if (validator.isURL(value)) {
-    return value;
-  }
-  return helpers.error('string.uri');
-};
+// const validateURL = (value, helpers) => {
+//   if (validator.isURL(value)) {
+//     return value;
+//   }
+//   return helpers.error('string.uri');
+// };
 
 app.use(requestLogger);
 
 // for security
 app.use(helmet());
 
-app.use(bodyParser.json(), cors());
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // app.use((req, res, next) => {

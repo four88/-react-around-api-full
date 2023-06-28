@@ -20,22 +20,21 @@ const allowedCors = [
   'https://www.around-pharanyu.students.nomoredomainssbs.ru',
   'localhost:3000',
 ];
-const dbUri = 'mongodb://0.0.0.0:27017/aroundb';
+const dbUri = 'mongodb+srv://four88:fourvc88@cluster0.bcbbp8y.mongodb.net/arounddb?retryWrites=true&w=majority';
 const dbConfig = {
   useNewUrlParser: true,
 };
 mongoose.Promise = global.Promise;
 
 // localhost not on my device I change it to 0.0.0.0
-mongoose.connect(dbUri, dbConfig)
-  .then(
-    () => {
-      console.log('DB connected');
-    },
-    (error) => {
-      console.log(`cannot connect to DB:${error}`);
-    },
-  );
+mongoose.connect(dbUri, dbConfig).then(
+  () => {
+    console.log('DB connected');
+  },
+  (error) => {
+    console.log(`cannot connect to DB:${error}`);
+  },
+);
 
 const validateURL = (value, helpers) => {
   if (validator.isURL(value)) {
@@ -55,7 +54,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use((req, res, next) => {
   const { origin } = req.headers; // assign the corresponding header to the origin variable
 
-  if (allowedCors.includes(origin)) { // check that the origin value is among the allowed domains
+  if (allowedCors.includes(origin)) {
+    // check that the origin value is among the allowed domains
     res.header('Access-Control-Allow-Origin', origin);
   }
 
@@ -71,21 +71,29 @@ app.get('/crash-test', () => {
 });
 
 // using routes
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
+app.post(
+  '/signup',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required(),
+    }),
   }),
-}), createUser);
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().custom(validateURL),
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
+  createUser,
+);
+app.post(
+  '/signin',
+  celebrate({
+    body: Joi.object().keys({
+      name: Joi.string().min(2).max(30),
+      about: Joi.string().min(2).max(30),
+      avatar: Joi.string().custom(validateURL),
+      email: Joi.string().required().email(),
+      password: Joi.string().required(),
+    }),
   }),
-}), login);
+  login,
+);
 
 app.use(auth);
 
@@ -101,11 +109,9 @@ app.use(errorLogger);
 app.use(errors());
 // for Non-exestent address
 app.use((err, req, res, next) => {
-  res
-    .status(err.statusCode ? err.statusCode : 500)
-    .send({
-      message: err.message ? err.message : 'An error occurred on the server',
-    });
+  res.status(err.statusCode ? err.statusCode : 500).send({
+    message: err.message ? err.message : 'An error occurred on the server',
+  });
 });
 
 app.listen(PORT, () => {

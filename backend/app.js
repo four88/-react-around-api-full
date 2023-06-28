@@ -52,29 +52,29 @@ app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// app.use((req, res, next) => {
-//   const { origin } = req.headers; // assign the corresponding header to the origin variable
-//
-//   if (allowedCors.includes(origin)) {
-//     // check that the origin value is among the allowed domains
-//     res.header('Access-Control-Allow-Origin', origin);
-//   }
-//   next();
-// });
+app.use((req, res, next) => {
+  const { origin } = req.headers; // assign the corresponding header to the origin variable
+
+  if (allowedCors.includes(origin)) {
+    // check that the origin value is among the allowed domains
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  next();
+});
 //
 // app.options('*', cors());
 //
-const corsOptions = {
-  origin(origin, callback) {
-    if (allowedCors.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-};
-
-app.use(cors(corsOptions));
+// const corsOptions = {
+//   origin(origin, callback) {
+//     if (allowedCors.indexOf(origin) !== -1 || !origin) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   },
+// };
+//
+// app.use(cors(corsOptions));
 
 app.get('/crash-test', () => {
   setTimeout(() => {

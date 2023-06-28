@@ -19,6 +19,7 @@ const allowedCors = [
   'https://around-pharanyu.students.nomoredomainssbs.ru',
   'https://www.around-pharanyu.students.nomoredomainssbs.ru',
   'localhost:3000',
+  'https://serene-nougat-43ac98.netlify.app/',
 ];
 const dbUri = 'mongodb+srv://four88:fourvc88@cluster0.bcbbp8y.mongodb.net/arounddb?retryWrites=true&w=majority';
 const dbConfig = {

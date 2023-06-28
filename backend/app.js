@@ -18,7 +18,7 @@ const app = express();
 const allowedCors = [
   'https://around-pharanyu.students.nomoredomainssbs.ru',
   'https://www.around-pharanyu.students.nomoredomainssbs.ru',
-  'localhost:3000',
+  'http://localhost:3000',
   'https://serene-nougat-43ac98.netlify.app',
 ];
 const dbUri = 'mongodb+srv://four88:fourvc88@cluster0.bcbbp8y.mongodb.net/arounddb?retryWrites=true&w=majority';
@@ -52,18 +52,29 @@ app.use(helmet());
 app.use(bodyParser.json(), cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-  const { origin } = req.headers; // assign the corresponding header to the origin variable
+// app.use((req, res, next) => {
+//   const { origin } = req.headers; // assign the corresponding header to the origin variable
+//
+//   if (allowedCors.includes(origin)) {
+//     // check that the origin value is among the allowed domains
+//     res.header('Access-Control-Allow-Origin', origin);
+//   }
+//   next();
+// });
+//
+// app.options('*', cors());
+//
+const corsOptions = {
+  origin(origin, callback) {
+    if (allowedCors.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
 
-  if (allowedCors.includes(origin)) {
-    // check that the origin value is among the allowed domains
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-
-  next();
-});
-
-app.options('*', cors());
+app.use(cors(corsOptions));
 
 app.get('/crash-test', () => {
   setTimeout(() => {

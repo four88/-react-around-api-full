@@ -157,6 +157,8 @@ export default function App() {
     }
     // use auth.authentication below
     // then set state to null
+    //
+    console.log(account)
     auth
       .authorize(account.email, account.password)
       .then((data) => {

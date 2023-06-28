@@ -10,7 +10,7 @@ const usersRoutes = require('./routes/users');
 const auth = require('./middleware/auth');
 const { NotFoundError } = require('./errors/notFoundError');
 
-const { PORT = 3000, BASE_PATH } = process.env;
+const { PORT = 3000 } = process.env;
 const { createUser, login } = require('./controllers/users');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 
@@ -19,7 +19,7 @@ const allowedCors = [
   'https://around-pharanyu.students.nomoredomainssbs.ru',
   'https://www.around-pharanyu.students.nomoredomainssbs.ru',
   'localhost:3000',
-  'https://serene-nougat-43ac98.netlify.app/',
+  'https://serene-nougat-43ac98.netlify.app',
 ];
 const dbUri = 'mongodb+srv://four88:fourvc88@cluster0.bcbbp8y.mongodb.net/arounddb?retryWrites=true&w=majority';
 const dbConfig = {
@@ -116,6 +116,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Link to server ${BASE_PATH}`);
   console.log(`Conntect to PORT ${PORT}`);
 });

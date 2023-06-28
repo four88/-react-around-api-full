@@ -14,8 +14,8 @@ class Api {
     return fetch(`${this._baseUrl}/users/me/avatar`, {
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json",
-        Authorization: `Bearer ${token}`
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
       },
     }).then((res) => this._checkResponse(res));
   }
@@ -25,8 +25,8 @@ class Api {
     return fetch(`${this._baseUrl}/cards`, {
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json",
-        Authorization: `Bearer ${token}`
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
       },
     }).then((res) => this._checkResponse(res));
   }
@@ -37,8 +37,8 @@ class Api {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json",
-        Authorization: `Bearer ${token}`
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         name,
@@ -53,8 +53,8 @@ class Api {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json",
-        Authorization: `Bearer ${token}`
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         name,
@@ -68,8 +68,8 @@ class Api {
     return fetch(`${this._baseUrl}/users/me/avatar`, {
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json",
-        Authorization: `Bearer ${token}`
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
       },
       method: "PATCH",
       body: JSON.stringify({ avatar }),
@@ -82,8 +82,8 @@ class Api {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json",
-        Authorization: `Bearer ${token}`
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
       },
     }).then((res) => this._checkResponse(res));
   }
@@ -93,8 +93,8 @@ class Api {
     return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json",
-        Authorization: `Bearer ${token}`
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
       },
       method: isLiked ? "DELETE" : "PUT",
     }).then((res) => this._checkResponse(res));
@@ -102,7 +102,7 @@ class Api {
 }
 
 const api = new Api({
-  baseUrl: "https://api.around-pharanyu.students.nomoredomainssbs.ru",
+  baseUrl: "https://api-around.onrender.com",
 });
 
 export default api;

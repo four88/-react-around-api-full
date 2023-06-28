@@ -1,4 +1,4 @@
-export const BASE_URL = "https://api.around-pharanyu.students.nomoredomainssbs.ru";
+export const BASE_URL = "https://api-around.onrender.com";
 
 const checkResponse = (res) => {
   if (res.ok) {
@@ -33,7 +33,7 @@ export const checkUserToken = (token) => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "Accept": "application/json",
+      Accept: "application/json",
       Authorization: `Bearer ${token}`,
     },
   }).then((res) => checkResponse(res));

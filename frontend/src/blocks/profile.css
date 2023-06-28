@@ -1,9 +1,10 @@
 .profile {
+  width: 880px;
   display: grid;
   grid-template-columns: 120px auto;
   grid-template-rows: 120px;
   column-gap: 30px;
-  grid-template-areas: 'pic info';
+  grid-template-areas: "pic info";
 }
 
 .profile__info {
@@ -24,8 +25,8 @@
   grid-template-columns: 1fr auto;
   grid-template-rows: auto auto;
   grid-template-areas:
-    'name btn'
-    'career career';
+    "name btn"
+    "career career";
   row-gap: 16px;
   column-gap: 18px;
 }
@@ -69,7 +70,7 @@
   background: rgba(0, 0, 0, 0.8);
   background-repeat: no-repeat;
   background-position: center;
-  background-image: url('../images/edit-avatar.svg');
+  background-image: url("../images/edit-avatar.svg");
   transition: 0.3s ease-in;
   opacity: 0;
   position: absolute;
@@ -96,7 +97,7 @@
   border: 1px solid hsl(0, 0%, 100%);
   box-sizing: border-box;
   background-color: black;
-  background-image: url('../images/edited_button.svg');
+  background-image: url("../images/edited_button.svg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: auto;
@@ -117,7 +118,7 @@
   box-sizing: border-box;
   border-radius: 2px;
   background-color: black;
-  background-image: url('../images/add_button.svg');
+  background-image: url("../images/add_button.svg");
   background-position: center;
   background-repeat: no-repeat;
   align-self: center;
@@ -131,6 +132,7 @@
 
 @media screen and (max-width: 900px) {
   .profile {
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;

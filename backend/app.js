@@ -78,13 +78,10 @@ const corsOptions = {
   optionsSuccessStatus: 204,
 };
 
-app.use(cors(corsOptions));
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.options('*', cors());
-
+app.use(cors(corsOptions));
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Server will crash now');

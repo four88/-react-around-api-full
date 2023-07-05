@@ -49,38 +49,41 @@ app.use(requestLogger);
 // for security
 app.use(helmet());
 
-app.use((req, res, next) => {
-  const { origin } = req.headers; // assign the corresponding header to the origin variable
+// app.use((req, res, next) => {
+//   const { origin } = req.headers; // assign the corresponding header to the origin variable
+//
+//   if (allowedCors.includes(origin)) {
+//     // check that the origin value is among the allowed domains
+//     res.header('Access-Control-Allow-Origin', origin);
+//
+//     res.header(
+//       'Access-Control-Allow-Methods',
+//       'GET, PATCH, PUT, POST, DELETE, OPTIONS',
+//     );
+//   }
+//   next();
+// });
+//
 
-  if (allowedCors.includes(origin)) {
-    // check that the origin value is among the allowed domains
-    res.header('Access-Control-Allow-Origin', origin);
+const corsOptions = {
+  origin(origin, callback) {
+    if (allowedCors.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+};
 
-    res.header(
-      'Access-Control-Allow-Methods',
-      'GET, PATCH, PUT, POST, DELETE, OPTIONS',
-    );
-  }
-  next();
-});
+app.use(cors(corsOptions));
 
-app.use(bodyParser.json(), cors());
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-//
 app.options('*', cors());
-//
-// const corsOptions = {
-//   origin(origin, callback) {
-//     if (allowedCors.indexOf(origin) !== -1 || !origin) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   },
-// };
-//
-// app.use(cors(corsOptions));
 
 app.get('/crash-test', () => {
   setTimeout(() => {

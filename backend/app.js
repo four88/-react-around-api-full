@@ -63,7 +63,7 @@ app.use(bodyParser.json(), cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //
-// app.options('*', cors());
+app.options('*', cors());
 //
 // const corsOptions = {
 //   origin(origin, callback) {
